@@ -314,53 +314,24 @@ def tp_generator(taskset, total_lcm):
 
 
 # not used
-def compute_busy_period(taskset):
-    global u
-    max_ita = 1000
-    i = 0
-    W_max = int((sum(task.c for task in taskset) / (1 - u)) + 1)
-    if u > 1:
-        pass
-    W_old = sum(task.c for task in taskset)
-    while True:
-        W_new = 0
-        for task in taskset:
-            W_new += task.c * ((W_old + task.t - 1) // task.t)
-        if W_new == W_old:
-            return W_new
-
-        if W_new > W_max:
-            return None
-
-        W_old = W_new
-        #print(W_old, W_new)
-        if i > max_ita:
-            return None
-        i += 1
-
-
-# not used
 def EDF_D(taskset):
     # find time points
     total_lcm = lcm_t(taskset)
     # print(total_lcm)
-    bp = compute_busy_period(taskset)
     time_points = set()
     # print("----- calculating time points -----")
     l = 1
 
-    #'''
-    if bp is None:
-        return 'F'
+    '''
 
     for task in taskset:
         if bp >= task.d:
             max_k = (bp - task.d) // task.t
             for k in range(max_k + 1):
                 time_points.add(task.d + k * task.t)
-    #'''
-
     '''
+
+    #'''
     if u > 1:   # not schedulable
         return 'F'
     for task in taskset:
@@ -374,7 +345,7 @@ def EDF_D(taskset):
             time_points.add(t)
             k += 1
         l += 1
-    '''
+    #'''
 
     # remove duplicated time points and sort
     time_points = sorted(time_points)
